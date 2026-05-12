@@ -1,0 +1,91 @@
+﻿@model IEnumerable<Eticaret.Core.Entities.Order>
+@{
+    ViewData["Title"] = "Admin Anasayfa";
+}
+
+<div class="row">
+    <div class="col-xl-3 col-md-6">
+        <div class="card bg-primary text-white mb-4">
+            <div class="card-body">Toplam Sipariş: @Model.Count()</div>
+            <div class="card-footer d-flex align-items-center justify-content-between">
+                <a class="small text-white stretched-link" href="/Admin/Orders">Detayları Gör</a>
+                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card bg-warning text-white mb-4">
+            <div class="card-body">Bekleyen Sipariş: @Model.Count(x => x.OrderState == Eticaret.Core.Entities.EnumOrderState.Waiting)</div>
+            <div class="card-footer d-flex align-items-center justify-content-between">
+                <a class="small text-white stretched-link" href="/Admin/Orders">Detayları Gör</a>
+                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card bg-success text-white mb-4">
+            <div class="card-body">Tamamlanan Sipariş: @Model.Count(x => x.OrderState == Eticaret.Core.Entities.EnumOrderState.Completed)</div>
+            <div class="card-footer d-flex align-items-center justify-content-between">
+                <a class="small text-white stretched-link" href="/Admin/Orders">Detayları Gör</a>
+                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card bg-danger text-white mb-4">
+            <div class="card-body">İptal Edilen Sipariş: @Model.Count(x => x.OrderState == Eticaret.Core.Entities.EnumOrderState.Cancelled)</div>
+            <div class="card-footer d-flex align-items-center justify-content-between">
+                <a class="small text-white stretched-link" href="/Admin/Orders">Detayları Gör</a>
+                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-table me-1"></i>
+        Son Siparişler
+    </div>
+    <div class="card-body">
+        <table id="datatablesSimple">
+            <thead>
+                <tr>
+                    <th>Sipariş No</th>
+                    <th>Müşteri</th>
+                    <th>Tarih</th>
+                    <th>Tutar</th>
+                    <th>Durum</th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <th>Sipariş No</th>
+                    <th>Müşteri</th>
+                    <th>Tarih</th>
+                    <th>Tutar</th>
+                    <th>Durum</th>
+                </tr>
+            </tfoot>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.OrderNumber</td>
+                        <td>@item.AppUser?.Name @item.AppUser?.Surname</td>
+                        <td>@item.OrderDate.ToString("g")</td>
+                        <td>@item.TotalPrice.ToString("c")</td>
+                        <td>@item.OrderState</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+    <script src="/admin/assets/demo/chart-area-demo.js"></script>
+    <script src="/admin/assets/demo/chart-bar-demo.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+    <script src="/admin/js/datatables-simple-demo.js"></script>
+}

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Admin Panel</title>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <!-- SB Admin CSS (Bootstrap 5.2) -->
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+    <link href="/admin/css/styles.css" rel="stylesheet" />
+    <!-- Premium custom overrides -->
+    <style>
+        :root {
+            --sidebar-bg: linear-gradient(180deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+            --sidebar-active: rgba(255,255,255,0.15);
+            --sidebar-hover: rgba(255,255,255,0.08);
+            --accent: #4f46e5;
+            --accent-light: #818cf8;
+            --topbar-bg: #ffffff;
+            --body-bg: #f4f6fc;
+            --card-shadow: 0 2px 12px rgba(79,70,229,0.08);
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--body-bg); }
+        
+        /* Sidebar */
+        #layoutSidenav #layoutSidenav_nav .sb-sidenav { background: var(--sidebar-bg); }
+        .sb-sidenav-dark .sb-sidenav-menu .nav-link { color: rgba(255,255,255,0.75); font-size: 0.875rem; font-weight: 500; border-radius: 8px; margin: 2px 12px; padding: 10px 12px; transition: all 0.2s ease; }
+        .sb-sidenav-dark .sb-sidenav-menu .nav-link:hover { color: #fff; background: var(--sidebar-hover); transform: translateX(4px); }
+        .sb-sidenav-dark .sb-sidenav-menu .nav-link.active { color: #fff; background: var(--accent); box-shadow: 0 4px 12px rgba(79,70,229,0.4); }
+        .sb-sidenav-dark .sb-sidenav-menu .sb-sidenav-menu-heading { color: rgba(255,255,255,0.4); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 16px 24px 6px; }
+        .sb-sidenav-dark .sb-sidenav-footer { background: rgba(0,0,0,0.25); }
+        .sb-sidenav-brand { background: rgba(0,0,0,0.2); font-weight: 700; font-size: 1.1rem; letter-spacing: 0.03em; }
+
+        /* Topbar */
+        .sb-topnav { background: var(--topbar-bg) !important; border-bottom: 1px solid #e8ecf4; box-shadow: 0 1px 8px rgba(0,0,0,0.06); }
+        .sb-topnav .navbar-brand { font-weight: 700; color: var(--accent) !important; font-size: 1.1rem; }
+
+        /* Cards */
+        .card { border: none; border-radius: 14px; box-shadow: var(--card-shadow); transition: box-shadow 0.2s; }
+        .card:hover { box-shadow: 0 6px 24px rgba(79,70,229,0.13); }
+        .card-header { border-radius: 14px 14px 0 0 !important; background: #fff; border-bottom: 1px solid #eef0f8; font-weight: 600; padding: 1rem 1.25rem; }
+
+        /* Tables */
+        .table { border-radius: 10px; overflow: hidden; }
+        .table thead th { background: #f0f2fc; color: #374151; font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; border: none; padding: 0.85rem 1rem; }
+        .table tbody tr { transition: background 0.15s; }
+        .table tbody tr:hover { background: #f5f3ff; }
+        .table td { vertical-align: middle; border-color: #f0f2fc; padding: 0.85rem 1rem; }
+
+        /* Buttons */
+        .btn-primary { background: var(--accent); border-color: var(--accent); font-weight: 500; border-radius: 8px; }
+        .btn-primary:hover { background: #4338ca; border-color: #4338ca; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(79,70,229,0.3); }
+        .btn { border-radius: 8px; font-size: 0.875rem; font-weight: 500; transition: all 0.2s; }
+        .btn-sm { border-radius: 6px; }
+
+        /* Badges */
+        .badge { border-radius: 6px; font-weight: 500; font-size: 0.75rem; }
+
+        /* Page title */
+        h1.mt-4 { font-size: 1.5rem; font-weight: 700; color: #111827; margin-bottom: 0.25rem !important; }
+
+        /* Forms */
+        .form-control, .form-select { border-radius: 8px; border-color: #e5e7eb; font-size: 0.875rem; transition: box-shadow 0.2s, border-color 0.2s; }
+        .form-control:focus, .form-select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(79,70,229,0.12); }
+        .form-label { font-weight: 500; font-size: 0.875rem; color: #374151; }
+
+        /* Breadcrumb */
+        .breadcrumb { font-size: 0.8rem; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(79,70,229,0.3); border-radius: 10px; }
+    </style>
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+</head>
+<body class="sb-nav-fixed">
+    <partial name="_UstBar" />
+    <div id="layoutSidenav">
+        <partial name="_SolMenu" />
+        <div id="layoutSidenav_content">
+            <main role="main">
+                <div class="container-fluid px-4">
+                    <h1 class="mt-4">@ViewData["Title"]</h1>
+                    @RenderBody()
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="/admin/js/scripts.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+

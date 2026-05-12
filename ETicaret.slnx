@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Eticaret.Core/Eticaret.Core.csproj" Id="3615770e-20c7-4e33-8ccd-bfa6012be68a" />
+  <Project Path="Eticaret.Data/Eticaret.Data.csproj" Id="07a76553-aca2-4f45-a440-58a21ff73fcc" />
+  <Project Path="Eticaret.Service/Eticaret.Service.csproj" Id="a9737964-86f9-4c4f-8a57-c4c282703179" />
+  <Project Path="ETicaret.WebUı/ETicaret.WebUı.csproj" />
+</Solution>
