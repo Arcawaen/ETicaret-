@@ -4,6 +4,7 @@ using Eticaret.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Eticaret.Data.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20260602194546_HashAdminPassword")]
+    partial class HashAdminPassword
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -135,7 +138,7 @@ namespace Eticaret.Data.Migrations
                             IsActive = true,
                             IsAdmin = true,
                             Name = "Admin",
-                            Password = "$2a$11$fYDZ8Jw4LX0I0L2KrjIYeeXRIjVJEw9ZoJQGDWwf8u08/976cpcya",
+                            Password = "$2a$10$Kuvv6ATRsbtHnJJHB359WeKrC6ImbEzY0wtCmB21KS39Cw5sMecMK",
                             Surname = "Admin",
                             UserGuid = new Guid("00000000-0000-0000-0000-000000000001"),
                             UserName = "admin"
@@ -394,116 +397,6 @@ namespace Eticaret.Data.Migrations
                     b.HasIndex("AppUserId");
 
                     b.ToTable("Orders");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AppUserId = 1,
-                            BillingAddress = "Kayseri / Kocasinan",
-                            CustomerId = "1",
-                            DeliveryAddress = "Kayseri / Kocasinan",
-                            OrderDate = new DateTime(2026, 2, 15, 14, 30, 0, 0, DateTimeKind.Unspecified),
-                            OrderNumber = "ORD-20260215-01",
-                            OrderState = 3,
-                            TotalPrice = 48000m
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AppUserId = 1,
-                            BillingAddress = "Kayseri / Kocasinan",
-                            CustomerId = "1",
-                            DeliveryAddress = "Kayseri / Kocasinan",
-                            OrderDate = new DateTime(2026, 2, 28, 10, 15, 0, 0, DateTimeKind.Unspecified),
-                            OrderNumber = "ORD-20260228-02",
-                            OrderState = 3,
-                            TotalPrice = 6000m
-                        },
-                        new
-                        {
-                            Id = 3,
-                            AppUserId = 1,
-                            BillingAddress = "Kayseri / Kocasinan",
-                            CustomerId = "1",
-                            DeliveryAddress = "Kayseri / Kocasinan",
-                            OrderDate = new DateTime(2026, 3, 12, 18, 45, 0, 0, DateTimeKind.Unspecified),
-                            OrderNumber = "ORD-20260312-03",
-                            OrderState = 3,
-                            TotalPrice = 12000m
-                        },
-                        new
-                        {
-                            Id = 4,
-                            AppUserId = 1,
-                            BillingAddress = "Kayseri / Kocasinan",
-                            CustomerId = "1",
-                            DeliveryAddress = "Kayseri / Kocasinan",
-                            OrderDate = new DateTime(2026, 3, 20, 11, 20, 0, 0, DateTimeKind.Unspecified),
-                            OrderNumber = "ORD-20260320-04",
-                            OrderState = 3,
-                            TotalPrice = 45000m
-                        },
-                        new
-                        {
-                            Id = 5,
-                            AppUserId = 1,
-                            BillingAddress = "Kayseri / Kocasinan",
-                            CustomerId = "1",
-                            DeliveryAddress = "Kayseri / Kocasinan",
-                            OrderDate = new DateTime(2026, 4, 5, 9, 0, 0, 0, DateTimeKind.Unspecified),
-                            OrderNumber = "ORD-20260405-05",
-                            OrderState = 3,
-                            TotalPrice = 17500m
-                        },
-                        new
-                        {
-                            Id = 6,
-                            AppUserId = 1,
-                            BillingAddress = "Kayseri / Kocasinan",
-                            CustomerId = "1",
-                            DeliveryAddress = "Kayseri / Kocasinan",
-                            OrderDate = new DateTime(2026, 4, 18, 16, 10, 0, 0, DateTimeKind.Unspecified),
-                            OrderNumber = "ORD-20260418-06",
-                            OrderState = 3,
-                            TotalPrice = 35000m
-                        },
-                        new
-                        {
-                            Id = 7,
-                            AppUserId = 1,
-                            BillingAddress = "Kayseri / Kocasinan",
-                            CustomerId = "1",
-                            DeliveryAddress = "Kayseri / Kocasinan",
-                            OrderDate = new DateTime(2026, 5, 2, 13, 5, 0, 0, DateTimeKind.Unspecified),
-                            OrderNumber = "ORD-20260502-07",
-                            OrderState = 3,
-                            TotalPrice = 9000m
-                        },
-                        new
-                        {
-                            Id = 8,
-                            AppUserId = 1,
-                            BillingAddress = "Kayseri / Kocasinan",
-                            CustomerId = "1",
-                            DeliveryAddress = "Kayseri / Kocasinan",
-                            OrderDate = new DateTime(2026, 5, 15, 15, 40, 0, 0, DateTimeKind.Unspecified),
-                            OrderNumber = "ORD-20260515-08",
-                            OrderState = 3,
-                            TotalPrice = 42000m
-                        },
-                        new
-                        {
-                            Id = 9,
-                            AppUserId = 1,
-                            BillingAddress = "Kayseri / Kocasinan",
-                            CustomerId = "1",
-                            DeliveryAddress = "Kayseri / Kocasinan",
-                            OrderDate = new DateTime(2026, 5, 28, 12, 50, 0, 0, DateTimeKind.Unspecified),
-                            OrderNumber = "ORD-20260528-09",
-                            OrderState = 1,
-                            TotalPrice = 7500m
-                        });
                 });
 
             modelBuilder.Entity("Eticaret.Core.Entities.OrderLine", b =>
@@ -533,88 +426,6 @@ namespace Eticaret.Data.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("OrderLine");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            OrderId = 1,
-                            ProductId = 1,
-                            Quantity = 1,
-                            UnitPrice = 45000m
-                        },
-                        new
-                        {
-                            Id = 2,
-                            OrderId = 1,
-                            ProductId = 4,
-                            Quantity = 1,
-                            UnitPrice = 3000m
-                        },
-                        new
-                        {
-                            Id = 3,
-                            OrderId = 2,
-                            ProductId = 4,
-                            Quantity = 2,
-                            UnitPrice = 3000m
-                        },
-                        new
-                        {
-                            Id = 4,
-                            OrderId = 3,
-                            ProductId = 3,
-                            Quantity = 1,
-                            UnitPrice = 12000m
-                        },
-                        new
-                        {
-                            Id = 5,
-                            OrderId = 4,
-                            ProductId = 1,
-                            Quantity = 1,
-                            UnitPrice = 45000m
-                        },
-                        new
-                        {
-                            Id = 6,
-                            OrderId = 5,
-                            ProductId = 9,
-                            Quantity = 5,
-                            UnitPrice = 3500m
-                        },
-                        new
-                        {
-                            Id = 7,
-                            OrderId = 6,
-                            ProductId = 2,
-                            Quantity = 1,
-                            UnitPrice = 35000m
-                        },
-                        new
-                        {
-                            Id = 8,
-                            OrderId = 7,
-                            ProductId = 4,
-                            Quantity = 3,
-                            UnitPrice = 3000m
-                        },
-                        new
-                        {
-                            Id = 9,
-                            OrderId = 8,
-                            ProductId = 10,
-                            Quantity = 1,
-                            UnitPrice = 42000m
-                        },
-                        new
-                        {
-                            Id = 10,
-                            OrderId = 9,
-                            ProductId = 6,
-                            Quantity = 3,
-                            UnitPrice = 2500m
-                        });
                 });
 
             modelBuilder.Entity("Eticaret.Core.Entities.Product", b =>

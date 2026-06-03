@@ -1,25 +1,111 @@
-<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+@{
+    var userName = Context.User.Identity.Name ?? "Admin";
+    var firstLetter = userName.Length > 0 ? userName.Substring(0, 1).ToUpper() : "A";
+}
+
+<nav class="sb-topnav navbar navbar-expand navbar-dark">
     <!-- Navbar Brand-->
-    <a class="navbar-brand ps-3" href="index.html">Eticaret Admin</a>
+    <a class="navbar-brand ps-3" href="/Admin" style="background: linear-gradient(135deg, #a78bfa 0%, #6366f1 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; letter-spacing: -0.03em;">
+        Eticaret Admin
+    </a>
     <!-- Sidebar Toggle-->
-    <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+    <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0 text-secondary" id="sidebarToggle" href="#!" style="transition: transform 0.2s; background: transparent; border: none; padding: 8px 12px; margin-left: 10px;">
+        <i class="fas fa-bars" style="font-size: 1.15rem;"></i>
+    </button>
+    
     <!-- Navbar Search-->
-    <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
-        <div class="input-group">
-            <input class="form-control" type="text" placeholder="Ara..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
-            <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
+    <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-4 my-2 my-md-0">
+        <div class="input-group" style="max-width: 260px;">
+            <span class="input-group-text bg-transparent border-end-0 border-secondary-subtle" style="border-radius: 20px 0 0 20px; border-color: rgba(255,255,255,0.08) !important; padding-right: 4px;">
+                <i class="fas fa-search text-muted" style="font-size: 0.85rem;"></i>
+            </span>
+            <input class="form-control border-start-0 border-secondary-subtle" style="border-radius: 0 20px 20px 0; border-color: rgba(255,255,255,0.08) !important; background: rgba(255,255,255,0.02) !important; font-size: 0.8rem; padding: 0.45rem 1rem 0.45rem 0.25rem;" type="text" placeholder="Hızlı ara..." aria-label="Search..." />
         </div>
     </form>
-    <!-- Navbar-->
-    <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+    
+    <!-- Theme Toggle Button -->
+    <div class="d-flex align-items-center ms-auto ms-md-0 me-2">
+        <button class="btn btn-link btn-sm text-secondary p-2" id="themeToggleBtn" onclick="toggleTheme()" style="transition: all 0.2s; background: transparent; border: none; outline: none;" title="Temayı Değiştir">
+            <i class="fas fa-moon" id="themeToggleIcon" style="font-size: 1.15rem; transition: transform 0.3s, color 0.3s;"></i>
+        </button>
+    </div>
+
+    <!-- Navbar Profile-->
+    <ul class="navbar-nav me-3 me-lg-4">
         <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="#!">Ayarlar</a></li>
-                <li><a class="dropdown-item" href="#!">Log Kayıtları</a></li>
-                <li><hr class="dropdown-divider" /></li>
-                <li><a class="dropdown-item" href="/Account/SignOut">Oturumu Kapat</a></li>
+            <a class="nav-link dropdown-toggle d-flex align-items-center p-0" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="outline: none;">
+                <div class="avatar-circle bg-dark text-white d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; border-radius: 50%; font-weight: 700; font-family: 'Outfit', sans-serif; font-size: 0.9rem; border: 2.5px solid rgba(124, 58, 237, 0.4); box-shadow: 0 0 10px rgba(124, 58, 237, 0.2); position: relative; background: linear-gradient(135deg, #1e1b4b 0%, #311042 100%) !important;">
+                    @firstLetter
+                    <span class="position-absolute bottom-0 end-0 bg-success border border-dark rounded-circle" style="width: 8px; height: 8px; padding: 0; transform: translate(1px, 1px);"></span>
+                </div>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end mt-2" aria-labelledby="navbarDropdown" style="background: var(--panel-bg) !important; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--panel-border) !important; border-radius: 12px !important; box-shadow: var(--card-shadow) !important; padding: 6px !important;">
+                <li class="px-3 py-2 border-bottom mb-1" style="border-color: var(--panel-border) !important;">
+                    <div class="small text-muted" style="font-size: 0.7rem;">Giriş Yapılan Hesap</div>
+                    <div class="font-weight-bold" style="font-size: 0.8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 160px; color: var(--text-primary);">@userName</div>
+                </li>
+                <li><a class="dropdown-item d-flex align-items-center" href="#!" style="color: var(--text-secondary) !important; border-radius: 8px; padding: 8px 16px; font-size: 0.85rem; font-weight: 500; transition: all 0.2s;"><i class="fas fa-cog me-2" style="font-size: 0.8rem;"></i> Ayarlar</a></li>
+                <li><a class="dropdown-item d-flex align-items-center" href="#!" style="color: var(--text-secondary) !important; border-radius: 8px; padding: 8px 16px; font-size: 0.85rem; font-weight: 500; transition: all 0.2s;"><i class="fas fa-list me-2" style="font-size: 0.8rem;"></i> Log Kayıtları</a></li>
+                <li><hr class="dropdown-divider" style="border-color: var(--panel-border) !important;" /></li>
+                <li><a class="dropdown-item d-flex align-items-center text-danger-hover" href="/Account/SignOut" style="color: #ef4444 !important; border-radius: 8px; padding: 8px 16px; font-size: 0.85rem; font-weight: 500; transition: all 0.2s;"><i class="fas fa-sign-out-alt me-2" style="font-size: 0.8rem;"></i> Oturumu Kapat</a></li>
             </ul>
         </li>
     </ul>
 </nav>
+
+<style>
+    /* User Dropdown Customization */
+    .dropdown-item:hover {
+        background: rgba(124, 58, 237, 0.12) !important;
+        color: #fff !important;
+        transform: translateX(4px);
+    }
+    .dropdown-item.text-danger-hover:hover {
+        background: rgba(239, 68, 68, 0.1) !important;
+        color: #f87171 !important;
+    }
+    #sidebarToggle:hover {
+        transform: scale(1.1);
+        color: var(--text-primary) !important;
+    }
+    #themeToggleBtn:hover i {
+        transform: rotate(15deg) scale(1.15);
+    }
+</style>
+
+<script>
+    function updateToggleIcon(theme) {
+        const icon = document.getElementById("themeToggleIcon");
+        if (icon) {
+            if (theme === "light") {
+                icon.className = "fas fa-sun";
+                icon.style.color = "#fbbf24";
+            } else {
+                icon.className = "fas fa-moon";
+                icon.style.color = "";
+            }
+        }
+    }
+
+    function toggleTheme() {
+        const isLight = document.documentElement.classList.contains("light-theme");
+        if (isLight) {
+            document.documentElement.classList.remove("light-theme");
+            localStorage.setItem("admin-theme", "dark");
+            updateToggleIcon("dark");
+            window.dispatchEvent(new CustomEvent("admin-theme-changed", { detail: { theme: "dark" } }));
+        } else {
+            document.documentElement.classList.add("light-theme");
+            localStorage.setItem("admin-theme", "light");
+            updateToggleIcon("light");
+            window.dispatchEvent(new CustomEvent("admin-theme-changed", { detail: { theme: "light" } }));
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const currentTheme = localStorage.getItem("admin-theme") || "dark";
+        updateToggleIcon(currentTheme);
+    });
+</script>
+
+

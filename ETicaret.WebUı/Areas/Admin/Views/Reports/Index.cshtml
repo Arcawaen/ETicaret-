@@ -1,0 +1,457 @@
+@{
+    ViewData["Title"] = "Raporlama & Analiz";
+    var categorySales = ViewBag.CategorySales as IEnumerable<dynamic>;
+    var topProducts = ViewBag.TopProducts as IEnumerable<dynamic>;
+    var monthlySales = ViewBag.MonthlySales as IEnumerable<dynamic>;
+}
+
+<!-- html2pdf library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<div class="d-flex justify-content-between align-items-center mb-4 mt-3">
+    <h1 class="mt-4 mb-0">Sistem Raporları</h1>
+    <div class="btn-group" role="group" style="box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+        <button onclick="downloadPDF()" class="btn btn-danger"><i class="fas fa-file-pdf me-1"></i> PDF İndir</button>
+        <button onclick="downloadExcel()" class="btn btn-success"><i class="fas fa-file-excel me-1"></i> Excel/CSV İndir</button>
+        <button onclick="window.print()" class="btn btn-outline-primary"><i class="fas fa-print me-1"></i> Yazdır</button>
+    </div>
+</div>
+
+<!-- Filtreleme Paneli -->
+<div class="card border-0 mb-4 p-3 shadow-sm" style="background: var(--panel-bg); border: 1px solid var(--panel-border) !important;">
+    <form method="get" action="/Admin/Reports" id="filterForm">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Başlangıç Tarihi</label>
+                <input type="date" name="startDate" id="startDate" class="form-control form-control-sm" value="@ViewBag.StartDate" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Bitiş Tarihi</label>
+                <input type="date" name="endDate" id="endDate" class="form-control form-control-sm" value="@ViewBag.EndDate" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Hızlı Seçim</label>
+                <div class="d-flex gap-1 flex-wrap">
+                    <button type="button" onclick="setQuickFilter(30)" class="btn btn-sm btn-secondary py-1 px-2" style="font-size: 0.7rem; border-radius: 6px;">Son 30 Gün</button>
+                    <button type="button" onclick="setQuickFilter(90)" class="btn btn-sm btn-secondary py-1 px-2" style="font-size: 0.7rem; border-radius: 6px;">Son 90 Gün</button>
+                    <button type="button" onclick="setQuickFilter(365)" class="btn btn-sm btn-secondary py-1 px-2" style="font-size: 0.7rem; border-radius: 6px;">Bu Yıl</button>
+                    <button type="button" onclick="clearFilters()" class="btn btn-sm btn-outline-secondary py-1 px-2" style="font-size: 0.7rem; border-radius: 6px;">Temizle</button>
+                </div>
+            </div>
+            <div class="col-md-2 text-end">
+                <button type="submit" class="btn btn-primary btn-sm w-100 py-2"><i class="fas fa-filter me-1"></i> Filtrele</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div id="reportContent">
+    <div class="row">
+        <!-- Revenue KPI -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-0 h-100 py-2" style="border-left: 4px solid #8b5cf6 !important; background: rgba(139, 92, 246, 0.05); box-shadow: 0 4px 20px rgba(139, 92, 246, 0.08);">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #a78bfa; font-size: 0.72rem; letter-spacing: 0.05em; font-family: 'Outfit', sans-serif;">Toplam Ciro (Onaylı/Tamamlanan)</div>
+                            <div class="h5 mb-0 font-weight-bold text-white mt-1">@(((decimal)ViewBag.TotalRevenue).ToString("c"))</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-dollar-sign fa-2x text-primary-subtle" style="opacity: 0.4; color: #a78bfa !important;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders KPI -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-0 h-100 py-2" style="border-left: 4px solid #10b981 !important; background: rgba(16, 185, 129, 0.05); box-shadow: 0 4px 20px rgba(16, 185, 129, 0.08);">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #34d399; font-size: 0.72rem; letter-spacing: 0.05em; font-family: 'Outfit', sans-serif;">Toplam Sipariş Adedi</div>
+                            <div class="h5 mb-0 font-weight-bold text-white mt-1">@ViewBag.TotalOrders</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-shopping-cart fa-2x text-success-subtle" style="opacity: 0.4; color: #34d399 !important;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Avg Order Value KPI -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-0 h-100 py-2" style="border-left: 4px solid #06b6d4 !important; background: rgba(6, 182, 212, 0.05); box-shadow: 0 4px 20px rgba(6, 182, 212, 0.08);">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #22d3ee; font-size: 0.72rem; letter-spacing: 0.05em; font-family: 'Outfit', sans-serif;">Ortalama Sipariş Tutarı</div>
+                            <div class="h5 mb-0 font-weight-bold text-white mt-1">@(((decimal)ViewBag.AverageOrderValue).ToString("c"))</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-calculator fa-2x text-info-subtle" style="opacity: 0.4; color: #22d3ee !important;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Registered Users KPI -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-0 h-100 py-2" style="border-left: 4px solid #f59e0b !important; background: rgba(245, 158, 11, 0.05); box-shadow: 0 4px 20px rgba(245, 158, 11, 0.08);">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #fbbf24; font-size: 0.72rem; letter-spacing: 0.05em; font-family: 'Outfit', sans-serif;">Kayıtlı Müşteri</div>
+                            <div class="h5 mb-0 font-weight-bold text-white mt-1">@ViewBag.TotalUsers</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-warning-subtle" style="opacity: 0.4; color: #fbbf24 !important;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Monthly Sales Chart -->
+        <div class="col-xl-8 col-lg-7">
+            <div class="card mb-4">
+                <div class="card-header d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold" style="color: #a78bfa; font-family: 'Outfit', sans-serif;"><i class="fas fa-chart-area me-1"></i>Aylık Satış Trendi</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-area" style="position: relative; height:320px;">
+                        <canvas id="monthlySalesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category Sales Chart -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="m-0 font-weight-bold" style="color: #a78bfa; font-family: 'Outfit', sans-serif;"><i class="fas fa-chart-pie me-1"></i>Kategori Dağılımı</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-pie pt-2 pb-2" style="position: relative; height:320px;">
+                        <canvas id="categorySalesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Top Products Table -->
+        <div class="col-lg-12">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="m-0 font-weight-bold" style="color: #a78bfa; font-family: 'Outfit', sans-serif;"><i class="fas fa-trophy me-1"></i>En Çok Satan 5 Ürün</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover mb-0" id="topProductsTable">
+                            <thead>
+                                <tr>
+                                    <th>Ürün Adı</th>
+                                    <th>Ürün Kodu</th>
+                                    <th class="text-center">Satış Adedi</th>
+                                    <th class="text-end">Toplam Gelir</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (topProducts != null && topProducts.Any())
+                                {
+                                    foreach (var item in topProducts)
+                                    {
+                                        <tr>
+                                            <td style="color: var(--text-primary); font-weight: 500;">@item.ProductName</td>
+                                            <td><span class="badge bg-light">@item.ProductCode</span></td>
+                                            <td class="text-center font-weight-bold" style="color: var(--text-secondary);">@item.QuantitySold</td>
+                                            <td class="text-end text-success font-weight-bold" style="color: #34d399 !important;">@(((decimal)item.TotalRevenue).ToString("c"))</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted">Henüz satış yapılmamış.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Store instances globally
+        let monthlySalesChartInstance = null;
+        let categorySalesChartInstance = null;
+
+        // Setup Monthly Sales Chart
+        const months = [];
+        const monthlyData = [];
+        @if (monthlySales != null)
+        {
+            foreach (var item in monthlySales)
+            {
+                var monthStr = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(item.Month);
+                @:months.push("@Html.Raw(monthStr) @item.Year");
+                @:monthlyData.push(@item.TotalSales);
+            }
+        }
+
+        const isLightOnLoad = document.documentElement.classList.contains("light-theme");
+        const gridColorOnLoad = isLightOnLoad ? "rgba(15, 23, 42, 0.05)" : "rgba(255, 255, 255, 0.05)";
+        const textColorOnLoad = isLightOnLoad ? "#475569" : "#94a3b8";
+        const chartBorderColorOnLoad = isLightOnLoad ? "#ffffff" : "#111827";
+
+        const ctxMonthly = document.getElementById('monthlySalesChart').getContext('2d');
+        const gradient = ctxMonthly.createLinearGradient(0, 0, 0, 300);
+        if (isLightOnLoad) {
+            gradient.addColorStop(0, 'rgba(124, 58, 237, 0.2)');
+            gradient.addColorStop(1, 'rgba(124, 58, 237, 0)');
+        } else {
+            gradient.addColorStop(0, 'rgba(124, 58, 237, 0.3)');
+            gradient.addColorStop(1, 'rgba(124, 58, 237, 0)');
+        }
+
+        monthlySalesChartInstance = new Chart(ctxMonthly, {
+            type: 'line',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: "Aylık Ciro",
+                    data: monthlyData,
+                    borderColor: "#8b5cf6",
+                    backgroundColor: gradient,
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.3,
+                    pointBackgroundColor: "#8b5cf6",
+                    pointBorderColor: "#fff",
+                    pointHoverBackgroundColor: "#fff",
+                    pointHoverBorderColor: "#8b5cf6",
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#1e293b',
+                        titleColor: '#f8fafc',
+                        bodyColor: '#cbd5e1',
+                        borderColor: 'rgba(255,255,255,0.1)',
+                        borderWidth: 1,
+                        padding: 10,
+                        displayColors: false
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { color: gridColorOnLoad, drawBorder: false },
+                        ticks: { color: textColorOnLoad, font: { family: 'Inter', size: 11 } }
+                    },
+                    y: {
+                        grid: { color: gridColorOnLoad, drawBorder: false },
+                        ticks: {
+                            color: textColorOnLoad,
+                            font: { family: 'Inter', size: 11 },
+                            callback: function(value) {
+                                return value.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY', minimumFractionDigits: 0 });
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Setup Category Distribution Chart
+        const categories = [];
+        const categoryData = [];
+        @if (categorySales != null)
+        {
+            foreach (var item in categorySales)
+            {
+                @:categories.push("@Html.Raw(item.CategoryName)");
+                @:categoryData.push(@item.TotalSales);
+            }
+        }
+
+        const ctxCategory = document.getElementById('categorySalesChart').getContext('2d');
+        categorySalesChartInstance = new Chart(ctxCategory, {
+            type: 'doughnut',
+            data: {
+                labels: categories,
+                datasets: [{
+                    data: categoryData,
+                    backgroundColor: ['#8b5cf6', '#10b981', '#06b6d4', '#f59e0b', '#ec4899', '#64748b'],
+                    borderColor: chartBorderColorOnLoad,
+                    borderWidth: 2,
+                    hoverOffset: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            boxWidth: 12,
+                            color: textColorOnLoad,
+                            font: { family: 'Inter', size: 11 }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: '#1e293b',
+                        titleColor: '#f8fafc',
+                        bodyColor: '#cbd5e1',
+                        borderColor: 'rgba(255,255,255,0.1)',
+                        borderWidth: 1,
+                        padding: 10
+                    }
+                }
+            }
+        });
+
+        // Theme Toggle Dynamic Listener
+        window.addEventListener("admin-theme-changed", function(e) {
+            const isLight = e.detail.theme === "light";
+            const gridColor = isLight ? "rgba(15, 23, 42, 0.05)" : "rgba(255, 255, 255, 0.05)";
+            const textColor = isLight ? "#475569" : "#94a3b8";
+            const chartBorderColor = isLight ? "#ffffff" : "#111827";
+
+            // Update Monthly Sales Chart
+            if (monthlySalesChartInstance) {
+                monthlySalesChartInstance.options.scales.x.grid.color = gridColor;
+                monthlySalesChartInstance.options.scales.y.grid.color = gridColor;
+                monthlySalesChartInstance.options.scales.x.ticks.color = textColor;
+                monthlySalesChartInstance.options.scales.y.ticks.color = textColor;
+                
+                const newGrad = ctxMonthly.createLinearGradient(0, 0, 0, 300);
+                if (isLight) {
+                    newGrad.addColorStop(0, 'rgba(124, 58, 237, 0.2)');
+                    newGrad.addColorStop(1, 'rgba(124, 58, 237, 0)');
+                } else {
+                    newGrad.addColorStop(0, 'rgba(124, 58, 237, 0.3)');
+                    newGrad.addColorStop(1, 'rgba(124, 58, 237, 0)');
+                }
+                monthlySalesChartInstance.data.datasets[0].backgroundColor = newGrad;
+                monthlySalesChartInstance.update();
+            }
+
+            // Update Category Distribution Chart
+            if (categorySalesChartInstance) {
+                categorySalesChartInstance.options.plugins.legend.labels.color = textColor;
+                categorySalesChartInstance.data.datasets[0].borderColor = chartBorderColor;
+                categorySalesChartInstance.update();
+            }
+        });
+
+        // Quick Date Filter JS
+        function setQuickFilter(days) {
+            const today = new Date();
+            const start = new Date();
+            start.setDate(today.getDate() - days);
+            
+            const formatDate = (date) => {
+                const y = date.getFullYear();
+                const m = String(date.getMonth() + 1).padStart(2, '0');
+                const d = String(date.getDate()).padStart(2, '0');
+                return `${y}-${m}-${d}`;
+            };
+            
+            document.getElementById("startDate").value = formatDate(start);
+            document.getElementById("endDate").value = formatDate(today);
+            document.getElementById("filterForm").submit();
+        }
+
+        function clearFilters() {
+            document.getElementById("startDate").value = "";
+            document.getElementById("endDate").value = "";
+            document.getElementById("filterForm").submit();
+        }
+
+        // Export functions (existing)
+        function downloadPDF() {
+            const element = document.getElementById('reportContent');
+            const opt = {
+                margin:       10,
+                filename:     'E-Ticaret-Satis-Raporu.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, logging: false, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+
+        function downloadExcel() {
+            let csv = '\ufeff'; // UTF-8 BOM
+            csv += 'E-TICARET SISTEM SATIS VE CIRO RAPORU\n\n';
+            
+            csv += 'RAPOR METRIKLERI\n';
+            csv += 'Toplam Ciro,Toplam Sipariş Adedi,Ortalama Sipariş Tutarı,Kayıtlı Müşteri\n';
+            
+            const ciro = "@(((decimal)ViewBag.TotalRevenue).ToString("N2"))".replace(/,/g, '');
+            const siparis = "@ViewBag.TotalOrders";
+            const ortalama = "@(((decimal)ViewBag.AverageOrderValue).ToString("N2"))".replace(/,/g, '');
+            const musteriler = "@ViewBag.TotalUsers";
+            
+            csv += `${ciro},${siparis},${ortalama},${musteriler}\n\n`;
+
+            csv += 'EN COK SATAN 5 URUN\n';
+            csv += 'Ürün Adı,Ürün Kodu,Satış Adedi,Toplam Gelir\n';
+            
+            const rows = document.querySelectorAll('#topProductsTable tbody tr');
+            rows.forEach(row => {
+                const cols = row.querySelectorAll('td');
+                if (cols.length >= 4) {
+                    const name = cols[0].innerText.trim();
+                    const code = cols[1].innerText.trim();
+                    const qty = cols[2].innerText.trim();
+                    const rev = cols[3].innerText.replace(/[^0-9,.-]/g, '').trim();
+                    csv += `"${name}","${code}",${qty},${rev}\n`;
+                }
+            });
+
+            csv += '\nAYLIK SATIS KONTROL LISTESI\n';
+            csv += 'Ay/Yıl,Toplam Satış Ciro\n';
+            @if (monthlySales != null)
+            {
+                foreach (var item in monthlySales)
+                {
+                    var monthStr = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(item.Month);
+                    @:csv += "@Html.Raw(monthStr) @item.Year," + @item.TotalSales + "\n";
+                }
+            }
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", "E-Ticaret-Satis-Raporu.csv");
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+}
+

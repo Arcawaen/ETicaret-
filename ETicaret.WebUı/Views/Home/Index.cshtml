@@ -1,4 +1,4 @@
-﻿@model HomePageViewModel
+@model HomePageViewModel
 
 @{
     ViewData["Title"] = "Anasayfa";
@@ -8,8 +8,8 @@
 
 @if (Model.Products is not null && Model.Products.Count > 0)
 {
-    <div class="my-5">
-        <h1 class="text-center">Sana Özel Ürünlerimiz</h1>
+    <div class="my-5 pt-4">
+        <h2 class="text-center mb-5 display-5 fw-bold">Sana Özel Ürünlerimiz</h2>
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
             @foreach (var item in Model.Products)
             {
@@ -21,8 +21,8 @@
 
 @if (Model.News is not null && Model.News.Count > 0)
 {
-    <div class="my-5">
-        <h1 class="text-center">Kampanyalarımız</h1>
+    <div class="my-5 pt-4">
+        <h2 class="text-center mb-5 display-5 fw-bold">Kampanyalarımız</h2>
         <div class="row gx-4 gx-lg-5 row-cols-2 justify-content-center">
             @foreach (var item in Model.News)
             {

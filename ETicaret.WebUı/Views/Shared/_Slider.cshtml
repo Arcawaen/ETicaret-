@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Slider>
+@model IEnumerable<Slider>
 
 <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-indicators">
@@ -10,12 +10,13 @@
         @foreach (var item in Model)
         {
             <div class="carousel-item @(item == Model.FirstOrDefault() ? "active" : "")">
+                <div class="slider-overlay"></div>
                 <a href="@item.Link">
-                    <img src="/Img/Slider/@item.Image" class="d-block w-100" alt="@item.Title">
+                    <img src="/Img/Slider/@item.Image" class="d-block w-100" style="object-fit: cover; height: 500px;" alt="@item.Title">
                 </a>
                 <div class="carousel-caption d-none d-md-block">
-                    <h5>@item.Title</h5>
-                    <p>@item.Description</p>
+                    <h5 class="display-4 fw-bold">@item.Title</h5>
+                    <p class="lead">@item.Description</p>
                 </div>
             </div>
         }

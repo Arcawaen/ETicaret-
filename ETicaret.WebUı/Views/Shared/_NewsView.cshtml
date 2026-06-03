@@ -1,7 +1,12 @@
-﻿@model News
+@model News
 
 <div class="col mb-5">
-    <a href="/News/Details/@Model.Id">
-        <img src="/Img/@Model.Image" alt="@Model.Name" class="img-fluid" />
-    </a>
+    <div class="card h-100 product-card border-0 overflow-hidden">
+        <a href="/News/Details/@Model.Id" class="d-block h-100 position-relative">
+            <img src="/Img/@Model.Image" alt="@Model.Name" class="w-100 h-100 object-fit-cover" />
+            <div class="slider-overlay d-flex align-items-end p-4">
+                <h4 class="text-white fw-bold mb-0 text-shadow-sm">@Model.Name</h4>
+            </div>
+        </a>
+    </div>
 </div>

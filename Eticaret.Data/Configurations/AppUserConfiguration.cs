@@ -26,7 +26,7 @@ namespace Eticaret.Data.Configurations
                     Email = "admin@gmail.com",
                     IsActive = true,
                     IsAdmin = true,
-                    Password = "Admin",
+                    Password = "$2a$11$fYDZ8Jw4LX0I0L2KrjIYeeXRIjVJEw9ZoJQGDWwf8u08/976cpcya",
                     CreateDate = new DateTime(2024, 1, 1),
                     UserGuid = Guid.Parse("00000000-0000-0000-0000-000000000001")
                 }

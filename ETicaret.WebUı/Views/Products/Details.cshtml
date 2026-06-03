@@ -1,55 +1,79 @@
-﻿@model ProductDetailViewModel
+@model ProductDetailViewModel
 
 @{
     ViewData["Title"] = Model.Product.Name;
 }
 
-<!-- Product section-->
-<section class="">
-    <div class="container px-4 px-lg-5 my-5">
-        <div class="row gx-4 gx-lg-5 align-items-center">
-            <div class="col-md-6">
-                <img class="card-img-top mb-3 mb-md-0" src="~/Img/Products/@Model.Product.Image" alt="...">
-                @if (Model.Product.ProductImages != null && Model.Product.ProductImages.Any())
-                {
-                    <div class="row mt-3">
-                        @foreach (var img in Model.Product.ProductImages)
-                        {
+<section class="py-5">
+    <div class="container my-4">
+        <div class="card border-0 shadow-sm p-4 p-md-5 bg-white" style="border-radius: var(--radius-lg);">
+            <div class="row gx-4 gx-lg-5 align-items-center">
+                <!-- Product Images -->
+                <div class="col-md-6 mb-4 mb-md-0">
+                    <div class="p-3 bg-light rounded-4 d-flex align-items-center justify-content-center overflow-hidden" style="height: 450px; box-shadow: var(--shadow-sm);">
+                        <img class="card-img-top img-fluid h-100 w-auto" style="object-fit: contain; transition: transform 0.3s;" src="~/Img/Products/@Model.Product.Image" alt="@Model.Product.Name">
+                    </div>
+                    @if (Model.Product.ProductImages != null && Model.Product.ProductImages.Any())
+                    {
+                        <div class="row mt-3 g-2">
                             <div class="col-3">
-                                <img class="img-thumbnail" src="~/Img/Products/@img.Image" alt="..." style="cursor:pointer;" onclick="document.querySelector('.card-img-top').src=this.src;">
+                                <div class="p-1 bg-light rounded-3 d-flex align-items-center justify-content-center overflow-hidden border border-primary border-2" style="height: 80px; cursor: pointer;" onclick="document.querySelector('.card-img-top').src=this.querySelector('img').src; document.querySelectorAll('.thumb-wrapper').forEach(e => e.classList.remove('border-primary', 'border-2')); this.classList.add('border-primary', 'border-2');">
+                                    <img class="img-fluid h-100 w-auto" style="object-fit: contain;" src="~/Img/Products/@Model.Product.Image" alt="@Model.Product.Name">
+                                </div>
                             </div>
+                            @foreach (var img in Model.Product.ProductImages)
+                            {
+                                <div class="col-3">
+                                    <div class="thumb-wrapper p-1 bg-light rounded-3 d-flex align-items-center justify-content-center overflow-hidden border" style="height: 80px; cursor: pointer;" onclick="document.querySelector('.card-img-top').src=this.querySelector('img').src; document.querySelectorAll('.thumb-wrapper').forEach(e => e.classList.remove('border-primary', 'border-2')); this.parentNode.querySelector('.thumb-wrapper').classList.add('border-primary', 'border-2');">
+                                        <img class="img-fluid h-100 w-auto" style="object-fit: contain;" src="~/Img/Products/@img.Image" alt="@Model.Product.Name">
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+                <!-- Product Details -->
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <span class="badge bg-secondary-subtle text-secondary px-2.5 py-1.5 rounded-pill fs-7">SKU: @Model.Product.ProductCode</span>
+                        @if (Model.Product.Stock > 0)
+                        {
+                            <span class="badge bg-success-subtle text-success px-2.5 py-1.5 rounded-pill fs-7">Stokta Var (@Model.Product.Stock Adet)</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger-subtle text-danger px-2.5 py-1.5 rounded-pill fs-7">Stok Dışı</span>
                         }
                     </div>
-                }
-            </div>
-            <div class="col-md-6">
-                <div class="small mb-1">SKU: @Model.Product.ProductCode</div>
-                <h1 class="display-5 fw-bolder">
-                    @Model.Product.Name
-                </h1>
-                <div class="fs-5 mb-5">
-                    @*  <span class="text-decoration-line-through">.00</span> *@
-                    <span>@Model.Product.Price.ToString("c")</span>
-                </div>
-                <p class="lead">
-                    @Model.Product.Description
-                </p>
-                <div class="d-flex">
-                    <form asp-action="Add" asp-controller="Cart" class="d-flex">
-                        <input type="hidden" name="ProductId" value="@Model.Product.Id" />
-                        <input class="form-control text-center me-3" name="quantity" id="inputQuantity" type="number" value="1" style="max-width: 5rem">
-                        <button class="btn btn-outline-dark flex-shrink-0" type="submit">
-                            <i class="bi-cart me-1"></i>
-                            Sepete Ekle
-                        </button>
-                    </form>
-                    <form asp-action="Add" asp-controller="Favorites" class="d-flex ms-3">
-                        <input type="hidden" name="ProductId" value="@Model.Product.Id" />
-                        <button class="btn btn-outline-dark flex-shrink-0" type="submit">
-                            <i class="bi-heart me-1"></i>
-                            Favorilere Ekle
-                        </button>
-                    </form>
+                    <h1 class="display-6 fw-bold mb-3">@Model.Product.Name</h1>
+                    <div class="fs-3 fw-bold text-primary mb-4">
+                        @Model.Product.Price.ToString("c")
+                    </div>
+                    <hr class="my-4 text-muted opacity-25" />
+                    <h5 class="fw-bold mb-2">Ürün Açıklaması</h5>
+                    <p class="text-muted lh-base mb-4 fs-6">
+                        @(!string.IsNullOrEmpty(Model.Product.Description) ? Model.Product.Description : "Bu ürün için herhangi bir açıklama girilmemiş.")
+                    </p>
+                    <hr class="my-4 text-muted opacity-25" />
+                    <div class="d-flex align-items-center gap-3">
+                        <form asp-action="Add" asp-controller="Cart" class="d-flex align-items-center gap-2 flex-grow-1">
+                            <input type="hidden" name="ProductId" value="@Model.Product.Id" />
+                            <div class="input-group" style="max-width: 120px;">
+                                <button class="btn btn-outline-secondary border-secondary-subtle" type="button" onclick="var input = this.parentNode.querySelector('input'); input.value = Math.max(1, parseInt(input.value) - 1);">-</button>
+                                <input class="form-control text-center border-secondary-subtle px-1" name="quantity" type="number" value="1" min="1" max="@Model.Product.Stock" style="font-weight: 600;">
+                                <button class="btn btn-outline-secondary border-secondary-subtle" type="button" onclick="var input = this.parentNode.querySelector('input'); input.value = Math.min(@Model.Product.Stock, parseInt(input.value) + 1);">+</button>
+                            </div>
+                            <button class="btn btn-primary btn-lg flex-grow-1 btn-add-cart d-flex align-items-center justify-content-center gap-2" type="submit">
+                                <i class="bi-cart-plus-fill"></i> Sepete Ekle
+                            </button>
+                        </form>
+                        <form asp-action="Add" asp-controller="Favorites" class="d-flex">
+                            <input type="hidden" name="ProductId" value="@Model.Product.Id" />
+                            <button class="btn btn-outline-danger btn-lg d-flex align-items-center justify-content-center px-3" style="border-radius: 10px;" type="submit" title="Favorilere Ekle">
+                                <i class="bi-heart"></i>
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -57,9 +81,9 @@
 </section>
 
 <!-- Related items section-->
-<section class="py-5 bg-light">
-    <div class="container px-4 px-lg-5 mt-5">
-        <h2 class="fw-bolder mb-4">İlişkili Ürünler</h2>
+<section class="py-5 bg-light-subtle">
+    <div class="container my-4">
+        <h3 class="fw-bold mb-4 display-6 text-center">İlişkili Ürünler</h3>
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
             @foreach (var item in Model.RelatedProducts)
             {

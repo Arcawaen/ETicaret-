@@ -4,6 +4,7 @@ using Eticaret.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Eticaret.Data.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20260602195050_SeedDummyOrdersAndLines")]
+    partial class SeedDummyOrdersAndLines
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -135,7 +138,7 @@ namespace Eticaret.Data.Migrations
                             IsActive = true,
                             IsAdmin = true,
                             Name = "Admin",
-                            Password = "$2a$11$fYDZ8Jw4LX0I0L2KrjIYeeXRIjVJEw9ZoJQGDWwf8u08/976cpcya",
+                            Password = "$2a$10$Kuvv6ATRsbtHnJJHB359WeKrC6ImbEzY0wtCmB21KS39Cw5sMecMK",
                             Surname = "Admin",
                             UserGuid = new Guid("00000000-0000-0000-0000-000000000001"),
                             UserName = "admin"

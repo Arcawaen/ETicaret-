@@ -11,31 +11,31 @@
                     <div class="sb-nav-link-icon">
                         <i class="fa-solid fa-users"></i>
                     </div>
-                    Kullanýcý Yönetimi
+                    KullanÄ±cÄ± YÃ¶netimi
                 </a>
                 <a class="nav-link" href="/Admin/Addresses">
                     <div class="sb-nav-link-icon">
                         <i class="fa-solid fa-users"></i>
                     </div>
-                    Adres Yönetimi
+                    Adres YÃ¶netimi
                 </a>
                 <a class="nav-link" href="/Admin/Brands">
                     <div class="sb-nav-link-icon">
                         <i class="fa-regular fa-copyright"></i>
                     </div>
-                    Marka Yönetimi
+                    Marka YÃ¶netimi
                 </a>
                 <a class="nav-link" href="/Admin/Categories">
                     <div class="sb-nav-link-icon">
                         <i class="fa-solid fa-list"></i>
                     </div>
-                    Kategori Yönetimi
+                    Kategori YÃ¶netimi
                 </a>
                 <a class="nav-link" href="/Admin/Products">
                     <div class="sb-nav-link-icon">
                         <i class="fa-solid fa-barcode"></i>
                     </div>
-                    Ürün Yönetimi
+                    ÃœrÃ¼n YÃ¶netimi
                 </a>
                 <a class="nav-link" href="/Admin/News">
                     <div class="sb-nav-link-icon">
@@ -47,27 +47,49 @@
                     <div class="sb-nav-link-icon">
                         <i class="fa-solid fa-layer-group"></i>
                     </div>
-                    Slider Yönetimi
+                    Slider YÃ¶netimi
                 </a>
 
                 <a class="nav-link" href="/Admin/Contacts">
                     <div class="sb-nav-link-icon">
                         <i class="fa-regular fa-comments"></i>
                     </div>
-                    Ýletiþim Formlarý
+                    Ä°letiÅŸim FormlarÄ±
                 </a>
 
                 <a class="nav-link" href="/Admin/Orders">
                     <div class="sb-nav-link-icon">
                         <i class="fa-solid fa-cart-shopping"></i>
                     </div>
-                    Sipariþler
+                    SipariÅŸler
+                </a>
+
+                <a class="nav-link" href="/Admin/Reports">
+                    <div class="sb-nav-link-icon">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    Raporlama
                 </a>
             </div>
         </div>
         <div class="sb-sidenav-footer">
-            <div class="small">Hoþgeldin:</div>
+            <div class="small">HoÅŸgeldin:</div>
             @Context.User.Identity.Name
         </div>
     </nav>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const currentPath = window.location.pathname.toLowerCase();
+            const navLinks = document.querySelectorAll("#sidenavAccordion .nav-link");
+            navLinks.forEach(link => {
+                const href = link.getAttribute("href").toLowerCase();
+                if (currentPath === href || (href !== "/admin" && href !== "/" && currentPath.startsWith(href))) {
+                    link.classList.add("active");
+                } else {
+                    link.classList.remove("active");
+                }
+            });
+        });
+    </script>
 </div>
+

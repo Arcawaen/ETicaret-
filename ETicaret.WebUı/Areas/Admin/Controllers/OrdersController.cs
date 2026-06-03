@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Eticaret.Core.Entities;
 using Eticaret.Data;
@@ -18,9 +18,16 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
         }
 
         // GET: Admin/Orders
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(EnumOrderState? state)
         {
-            return View(await _context.Orders.Include(u => u.AppUser).ToListAsync());
+            var query = _context.Orders.Include(u => u.AppUser).AsQueryable();
+            if (state.HasValue)
+            {
+                query = query.Where(o => o.OrderState == state.Value);
+            }
+
+            ViewBag.SelectedState = state;
+            return View(await query.ToListAsync());
         }
 
         // GET: Admin/Orders/Details/5

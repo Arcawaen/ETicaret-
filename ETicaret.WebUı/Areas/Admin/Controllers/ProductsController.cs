@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Eticaret.Core.Entities;
@@ -20,10 +20,25 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
 
         // GET: Admin/Product
         // ARAMA
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? categoryId, int? brandId)
         {
-            var databaseContext = _context.Products.Include(p => p.Brand).Include(p => p.Category);
-            return View(await databaseContext.ToListAsync());
+            var query = _context.Products.Include(p => p.Brand).Include(p => p.Category).AsQueryable();
+            
+            if (categoryId.HasValue)
+            {
+                query = query.Where(p => p.CategoryId == categoryId.Value);
+            }
+            if (brandId.HasValue)
+            {
+                query = query.Where(p => p.BrandId == brandId.Value);
+            }
+
+            ViewBag.Categories = new SelectList(await _context.Categories.OrderBy(c => c.Name).ToListAsync(), "Id", "Name", categoryId);
+            ViewBag.Brands = new SelectList(await _context.Brands.OrderBy(b => b.Name).ToListAsync(), "Id", "Name", brandId);
+            ViewBag.SelectedCategoryId = categoryId;
+            ViewBag.SelectedBrandId = brandId;
+
+            return View(await query.ToListAsync());
         }
 
         // GET: Admin/Products/Details/5
