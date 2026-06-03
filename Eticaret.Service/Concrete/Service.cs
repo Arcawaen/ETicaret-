@@ -4,6 +4,8 @@ using Eticaret.Service.Abstract;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
+// E-Ticaret Service Implementation
+
 namespace Eticaret.Service.Concrete
 {
     public class Service<T> : IService<T> where T : class, IEntity, new()

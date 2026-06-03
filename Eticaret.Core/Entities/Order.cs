@@ -1,5 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
+// E-Ticaret Core Order Entity
 namespace Eticaret.Core.Entities
 {
     public class Order : IEntity
